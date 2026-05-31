@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-rpg-bg text-slate-100 overflow-x-hidden antialiased;
+    font-family: 'Outfit', 'Inter', sans-serif;
+  }
+}
+
+/* Custom premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0b0d;
+}
+::-webkit-scrollbar-thumb {
+  background: #1b1e2b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+/* Glassmorphic Panel Utility */
+.glass-panel {
+  background: rgba(18, 20, 28, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(35, 40, 59, 0.45);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Glow effects for attributes */
+.glow-str { box-shadow: 0 0 15px rgba(239, 68, 68, 0.15); }
+.glow-int { box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); }
+.glow-cha { box-shadow: 0 0 15px rgba(236, 72, 153, 0.15); }
+.glow-con { box-shadow: 0 0 15px rgba(16, 185, 129, 0.15); }
+
+/* Tailwind Typography Custom Dark Mode Styling */
+.prose {
+  color: #cbd5e1;
+  max-width: 100%;
+}
+.prose a {
+  color: #8b5cf6;
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px dashed rgba(139, 92, 246, 0.4);
+  transition: all 0.2s;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+.prose a:hover {
+  color: #a78bfa;
+  background-color: rgba(139, 92, 246, 0.15);
+  border-bottom-style: solid;
+}
+.prose strong {
+  color: #f8fafc;
+}
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #f8fafc;
+  font-weight: 700;
+}
+.prose code {
+  color: #ec4899;
+  background-color: #12141c;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: 'Fira Code', monospace;
+}
+.prose code::before, .prose code::after {
+  content: "";
+}
+
+/* Keyframes for loot card popups */
+@keyframes loot-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(217, 119, 6, 0.3);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(217, 119, 6, 0.6);
+  }
+}
+
+.animate-loot-glow {
+  animation: loot-pulse 2s infinite ease-in-out;
+}

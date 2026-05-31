@@ -1,0 +1,25 @@
+# Python files
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+
+# Node files
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# IDEs
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS / Systems
+.DS_Store
+Thumbs.db
+*.log
