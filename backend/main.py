@@ -40,6 +40,20 @@ async def get_wiki_page(page_title: str):
         extract_html = summary_data.get("extract_html", f"<p>{summary_data.get('extract', '')}</p>")
         extract_text = summary_data.get("extract", "")
         
+        # Fetch related pages to append as portals, guaranteeing clickable hyperlinks
+        try:
+            related = await WikiQuestService.fetch_wikipedia_related(page_title)
+            if related:
+                portals_html = '<div class="mt-6 pt-4 border-t border-slate-800/80"><h4 class="text-xs font-black text-amber-500 uppercase tracking-widest mb-3 flex items-center gap-1">🔮 Discovered Portal Links:</h4><div class="flex flex-wrap gap-2">'
+                for r_page in related[:8]: # top 8 related pages
+                    r_title = r_page.get("title", "")
+                    r_display = r_page.get("displaytitle", r_title).replace("_", " ")
+                    portals_html += f'<a href="./{r_title}" class="inline-block px-3 py-1.5 bg-purple-950/20 hover:bg-purple-950/40 border border-purple-500/30 hover:border-purple-500 rounded-lg text-purple-400 font-bold text-xs transition-colors">{r_display}</a>'
+                portals_html += '</div></div>'
+                extract_html += portals_html
+        except Exception as rel_err:
+            print(f"Failed to append related links: {rel_err}")
+            
         # Run AI parsing
         parsed_page = await WikiQuestService.parse_page_with_dm(title, extract_html, extract_text)
         return parsed_page

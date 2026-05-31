@@ -41,7 +41,29 @@ class WikiQuestService:
             return response.json()
 
     @staticmethod
-    def get_mock_dm_parse(title: str, text: str) -> WikiPageResponse:
+    async def fetch_wikipedia_related(page_title: str) -> list:
+        """
+        Queries the official Wikimedia REST API to fetch related pages for backup links.
+        """
+        sanitized_title = page_title.strip().replace(" ", "_")
+        url = f"https://en.wikipedia.org/api/rest_v1/page/related/{sanitized_title}"
+        
+        headers = {
+            "User-Agent": "WikiQuestPotatoEdition/1.0 (contact@example.com) HTTPX/0.24"
+        }
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, headers=headers, follow_redirects=True, timeout=5.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    return data.get("pages", [])
+        except Exception as e:
+            print(f"Error fetching related pages: {e}")
+        return []
+
+    @staticmethod
+    def get_mock_dm_parse(title: str, html: str, text: str) -> WikiPageResponse:
         """
         Generates simulated RPG values if no LLM API key is present.
         """
@@ -85,7 +107,7 @@ class WikiQuestService:
         
         return WikiPageResponse(
             title=title,
-            html=f"<p>{text}</p>",
+            html=html,
             text=text,
             attributeZone=zone,
             xpReward=xp,
@@ -99,7 +121,7 @@ class WikiQuestService:
         Sends the page details to the LLM (Gemini or OpenAI) to parse it into the RPG format.
         """
         if not GEMINI_API_KEY and not OPENAI_API_KEY:
-            return cls.get_mock_dm_parse(title, text)
+            return cls.get_mock_dm_parse(title, html, text)
             
         prompt = f"""
         You are the Dungeon Master for 'WikiQuest: Potato Edition', a web-based text RPG where Wikipedia is the map.
@@ -163,7 +185,7 @@ class WikiQuestService:
                 
         except Exception as e:
             print(f"Error calling LLM: {e}. Falling back to mock parsing.")
-            return cls.get_mock_dm_parse(title, text)
+            return cls.get_mock_dm_parse(title, html, text)
 
     @classmethod
     async def validate_transition(cls, req: TransitionValidationRequest) -> TransitionValidationResponse:
